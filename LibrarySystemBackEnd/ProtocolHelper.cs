@@ -241,6 +241,17 @@ namespace LibrarySystemBackEnd
 						pro.Admin.Password = adminnode.Attributes["adminpassword"].Value;
 						break;
 					}
+				case RequestMode.AdminAddBook:
+					{
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
+						pro.NowBook.BookAuthor = booknode.Attributes["bookauthor"].Value;
+						pro.NowBook.
+
+						XmlNode adminnode = root.SelectSingleNode("admin");
+						pro.Admin = new ClassAdmin(adminnode.Attributes["adminid"].Value);
+						pro.Admin.Password = adminnode.Attributes["adminpassword"].Value;
+					}
 				default:
 					break;
 			}

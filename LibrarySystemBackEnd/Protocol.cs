@@ -608,6 +608,10 @@ namespace LibrarySystemBackEnd
 						ret += "</protocol>";
 						return ret;
 					}
+				case RequestMode.AdminAddBook:
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
 				default:
 					break;
 			}
