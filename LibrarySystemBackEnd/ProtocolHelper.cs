@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,11 +8,51 @@ using System.Xml;
 
 namespace LibrarySystemBackEnd
 {
+	/// <summary>
+	/// 分析协议
+	/// </summary>
 	class ProtocolHelper
 	{
+		#region 私有变量
+		/// <summary>
+		/// file节点，基本节点
+		/// </summary>
 		private XmlNode fileNode;
+
+		/// <summary>
+		/// 全局根节点
+		/// </summary>
 		private XmlNode root;
 
+		#endregion
+
+		/// <summary>
+		/// 获取日期，尝试使用zh-cn，en-us，en-uk三种方式解析
+		/// </summary>
+		/// <param name="date">包含日期的字符串</param>
+		/// <returns>转换好的日期</returns>
+		private DateTime getDate(string date)
+		{
+			DateTime res;
+			if (DateTime.TryParse(date, new CultureInfo("zh-CN"), DateTimeStyles.AssumeLocal, out res))
+			{
+				return res;
+			}
+			else if (DateTime.TryParse(date, new CultureInfo("en-UK"), DateTimeStyles.AssumeLocal, out res))
+			{
+				return res;
+			}
+			else if (DateTime.TryParse(date, new CultureInfo("en-US"), DateTimeStyles.AssumeLocal, out res))
+			{
+				return res;
+			}
+			else return DateTime.Parse(date);
+		}
+
+		/// <summary>
+		/// 获取根节点
+		/// </summary>
+		/// <param name="protocol">协议</param>
 		public ProtocolHelper(string protocol)
 		{
 			XmlDocument doc = new XmlDocument();
@@ -20,8 +61,8 @@ namespace LibrarySystemBackEnd
 			fileNode = root.SelectSingleNode("file");
 		}
 
-		// 此时的protocal一定为单条完整protocal
-		// 获取单条协议包含的信息
+		/// 此时的protocal一定为单条完整protocal
+		/// 获取单条协议包含的信息
 		public Protocol GetProtocol()
 		{
 			RequestMode mode = (RequestMode)Enum.Parse(typeof(RequestMode), fileNode.Attributes["mode"].Value, false);
@@ -243,15 +284,17 @@ namespace LibrarySystemBackEnd
 					}
 				case RequestMode.AdminAddBook:
 					{
-						XmlNode booknode = root.SelectSingleNode("book");
-						pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
-						pro.NowBook.BookAuthor = booknode.Attributes["bookauthor"].Value;
-						pro.NowBook.
-
 						XmlNode adminnode = root.SelectSingleNode("admin");
 						pro.Admin = new ClassAdmin(adminnode.Attributes["adminid"].Value);
 						pro.Admin.Password = adminnode.Attributes["adminpassword"].Value;
+
+						XmlNode booknode = root.SelectSingleNode("book");
+						pro.NowBook = new ClassBook(booknode.Attributes["bookname"].Value, booknode.Attributes["bookisbn"].Value, Convert.ToInt32(booknode.Attributes["bookamount"].Value), DateTime.Now, getDate(booknode.Attributes["publishtime"].Value), pro.Admin.Id, booknode.Attributes["booklabel1"].Value, booknode.Attributes["booklabel2"].Value, booknode.Attributes["booklabel3"].Value, booknode.Attributes["publisher"].Value, booknode.Attributes["author"].Value, null, booknode.Attributes["introduction"].Value);
+
+						break;
+						
 					}
+				
 				default:
 					break;
 			}

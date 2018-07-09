@@ -9,8 +9,10 @@ using System.Xml;
 
 namespace LibrarySystemBackEnd
 {
-	public class ClassSQL
+	internal class ClassSQL
 	{
+		#region 私有变量
+		//配置文件，包含数据库配置
 		private string configFile = @"config.xml";
 		private XmlNode sqlNode;
 		private XmlNode root;
@@ -19,8 +21,9 @@ namespace LibrarySystemBackEnd
 		private string loginPassword;
 		private string initialCatalog;
 		private SqlConnectionStringBuilder builder;
+		#endregion
 
-		public SqlConnectionStringBuilder Builder
+		internal SqlConnectionStringBuilder Builder
 		{
 			get
 			{
@@ -33,7 +36,7 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
-		public ClassSQL()
+		internal ClassSQL()
 		{
 			XmlDocument doc = new XmlDocument();
 			doc.Load(configFile);
@@ -49,23 +52,6 @@ namespace LibrarySystemBackEnd
 			Builder.Password = loginPassword;
 			Builder.InitialCatalog = initialCatalog;
 		}
-		public void Print()
-		{
-			Console.WriteLine(sqlName + "\n" + loginName + "\n" + loginPassword);
-		}
-
-		public DataSet Query(string SQLstr, string tableName)
-		{
-			DataSet ds = new DataSet();
-			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
-			{
-				con.Open();
-				SqlDataAdapter SQLda = new SqlDataAdapter(SQLstr, con);
-				SQLda.Fill(ds, tableName);
-			}
-			return ds;
-		}
-	
 		
 	}
 }

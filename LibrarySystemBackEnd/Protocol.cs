@@ -10,7 +10,7 @@ namespace LibrarySystemBackEnd
 	/// <summary>
 	/// 协议类型字段
 	/// </summary>
-	public enum RequestMode
+	enum RequestMode
 	{
 		UserLogin = 0,
 		UserRegist,
@@ -20,7 +20,7 @@ namespace LibrarySystemBackEnd
 		UserBookStateLoad,
 		UserBookCommentLoad,
 		UserBorrowBook,
-		UserCommentBook,
+		UserCommentBook,//添加评论
 		UserDelComment,
 		UserOrderBook,
 
@@ -46,15 +46,20 @@ namespace LibrarySystemBackEnd
 		AdminChargeUser,
 		AdminAddBook,
 		AdminLoadABookHis,
+		AdminSendImageAck,
 	}
+	/// <summary>
+	/// 协议类
+	/// </summary>
 	class Protocol
 	{
+		#region 私有成员
 		private RequestMode mode;
 		private int port;
-		private ClassUserBasicInfo userInfo;
-		private ClassUserBasicInfo newUserInfo;
+		private ClassUserBasicInfo userInfo;//用户基本信息
+		private ClassUserBasicInfo newUserInfo;//修改用户信息使用的新用户信息
 		private string searchWords;
-		private int searchCat;
+		private int searchCat;//搜索书籍时使用，搜索类别
 		private int curNum, endNum;
 		private int returnVal;
 		private string fileName;
@@ -72,25 +77,33 @@ namespace LibrarySystemBackEnd
 		private ClassAdmin admin;
 		private ClassUserBasicInfo[] adminSearchUser;
 		private int chargeNum;
-
 		private ClassBorrowHis[] bookHis;
 
-		public Protocol(RequestMode mode, int port)
-		{
-			this.mode = mode;
-			this.port = port;
-		}
+		int bookAmount, userAmount; double borrowRate;
 
+		#endregion
+
+
+		#region 访问器
+		/// <summary>
+		/// 协议类型
+		/// </summary>
 		public RequestMode Mode
 		{
 			get { return mode; }
 		}
 
+		/// <summary>
+		/// 端口号
+		/// </summary>
 		public int Port
 		{
 			get { return port; }
 		}
 
+		/// <summary>
+		/// 用户信息
+		/// </summary>
 		public ClassUserBasicInfo UserInfo
 		{
 			get
@@ -104,6 +117,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 返回值
+		/// </summary>
 		public int Retval
 		{
 			get
@@ -117,6 +133,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 搜索内容
+		/// </summary>
 		public string SearchWords
 		{
 			get
@@ -130,6 +149,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 搜索类别
+		/// </summary>
 		public int SearchCat
 		{
 			get
@@ -143,6 +165,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 当前编号
+		/// </summary>
 		public int CurNum
 		{
 			get
@@ -156,6 +181,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 总数
+		/// </summary>
 		public int EndNum
 		{
 			get
@@ -338,6 +366,52 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		public int BookAmount
+		{
+			get
+			{
+				return bookAmount;
+			}
+
+			set
+			{
+				bookAmount = value;
+			}
+		}
+
+		public int UserAmount
+		{
+			get
+			{
+				return userAmount;
+			}
+
+			set
+			{
+				userAmount = value;
+			}
+		}
+
+		public double BorrowRate
+		{
+			get
+			{
+				return borrowRate;
+			}
+
+			set
+			{
+				borrowRate = value;
+			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// 去掉xml中的转义字符
+		/// </summary>
+		/// <param name="ins">带转换的字符串</param>
+		/// <returns>将转义字符替换的、可实际传输的字符串</returns>
 		private string ConvertString(string ins)
 		{
 			string restring = ins;
@@ -352,13 +426,23 @@ namespace LibrarySystemBackEnd
 			return restring;
 		}
 
+		public Protocol(RequestMode mode, int port)
+		{
+			this.mode = mode;
+			this.port = port;
+		}
+
+		/// <summary>
+		/// 将协议变成可传输的字符串
+		/// </summary>
+		/// <returns>转换好的字符串</returns>
 		public override string ToString()
 		{
 			switch (mode)
 			{
 				case RequestMode.UserLogin:
 					{
-						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /><info bookamount=\"{3}\" useramount=\"{4}\" borrowrate=\"{5}\" /></protocol>", mode, port, returnVal, BookAmount, UserAmount, BorrowRate);
 					}
 				case RequestMode.UserRegist:
 					{
@@ -419,6 +503,12 @@ namespace LibrarySystemBackEnd
 						{
 							ret += String.Format("<bookstate bookextisbn=\"{0}\" bookstate=\"{1}\" />", eachBookState[i].BookIsbn, eachBookState[i].BookState);
 						}
+
+						for (int i = 0; i < BookHis.Length; i++)
+						{
+							ret += String.Format("<admingetschedule userid=\"{0}\" scheduledate=\"{1}\" />", bookHis[i].UserId, bookHis[i].BorrowTime, bookHis[i].ReturnTime);
+						}
+
 						ret += "</protocol>";
 						return ret;
 					}
@@ -483,7 +573,7 @@ namespace LibrarySystemBackEnd
 						{
 							ret += String.Format("<usereachscheduledbook bookname=\"{0}\" bookborrowdate=\"{1}\" borrowororder=\"{2}\" bookisbn=\"{3}\" />", ConvertString(user.ScheduledBooks[i].BookName), user.ScheduledBooks[i].BorrowTime, 1, user.ScheduledBooks[i].BookIsbn);
 						}
-						
+
 						k = user.BorrowHis.Count;
 						ret += String.Format("<userborrowhis sum=\"{0}\" />", k);
 						for (int i = 0; i < k; i++)
@@ -609,6 +699,10 @@ namespace LibrarySystemBackEnd
 						return ret;
 					}
 				case RequestMode.AdminAddBook:
+					{
+						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+					}
+				case RequestMode.AdminSendImageAck:
 					{
 						return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
 					}

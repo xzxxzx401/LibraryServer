@@ -12,7 +12,7 @@ namespace LibrarySystemBackEnd
 	/// <summary>
 	/// 管理员类
 	/// </summary>
-	public class ClassAdmin
+	class ClassAdmin
 	{
 		#region PrivateProperty
 		private string id;
@@ -20,7 +20,9 @@ namespace LibrarySystemBackEnd
 		private string password;
 		private USERTYPE type;
 		private DateTime registerDate;
+		#endregion
 
+		#region 访问器
 		/// <summary>
 		/// 管理员ID
 		/// </summary>

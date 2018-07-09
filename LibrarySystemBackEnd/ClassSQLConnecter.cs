@@ -8,13 +8,25 @@ using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd
 {
-	public class ClassSQLConnecter
+	class ClassSQLConnecter
 	{
+		#region 常量
+		/// <summary>
+		/// 默认的借阅期限
+		/// </summary>
 		public static readonly TimeSpan DefaultDate = new TimeSpan(30, 0, 0, 0, 0);
+		/// <summary>
+		/// 默认的续借期限
+		/// </summary>
 		public static readonly TimeSpan DefaultDelay = new TimeSpan(15, 0, 0, 0, 0);
+		#endregion
+
+		#region 私有变量
 		private ClassSQL sql;
+		#endregion
 
 		#region 私有方法
+
 		/// <summary>
 		/// 在数据库中精确查找用户
 		/// </summary>
@@ -135,6 +147,12 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 获取个人详细信息
+		/// </summary>
+		/// <param name="userId">id</param>
+		/// <param name="userBasic">基本信息</param>
+		/// <returns>包含借阅情况、预约情况、借阅历史、通知的完整用户</returns>
 		private ClassUser getUserDetail(string userId, ClassUserBasicInfo userBasic)
 		{
 			ClassUser user = new ClassUser(userBasic);
@@ -245,7 +263,10 @@ namespace LibrarySystemBackEnd
 			}
 			return user;
 		}
+
 		#endregion
+
+		#region 后端数据库逻辑
 
 		/// <summary>
 		/// 构造，初始化SQL连接
@@ -261,7 +282,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="id">用户id</param>
 		/// <param name="password">密码</param>
 		/// <returns>管理员登录成功返回2，用户登录成功返回1,失败返回0(用户名不存在，密码不正确)</returns>
-		public int Login(string id, string password)
+		public int Login(string id, string password, ref int bookAmount, ref int userAmount, ref double borrowingRate)
 		{
 			ClassUserBasicInfo user = getUsersBasic(id);
 			ClassAdmin admin = getAdmin(id);
@@ -274,7 +295,37 @@ namespace LibrarySystemBackEnd
 			}
 			else if (admin != null)
 			{
-				if (admin.Password == password) return 2;
+				if (admin.Password == password)
+				{
+					using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+					{
+						SqlCommand cmd = con.CreateCommand();
+						cmd.CommandText = "select count(*) from dt_Book";
+						cmd.Parameters.Clear();
+
+						con.Open();
+						bookAmount = Convert.ToInt32(cmd.ExecuteScalar());
+
+						cmd.CommandText = "select count(*) from dt_UserBasic";
+						cmd.Parameters.Clear();
+
+						userAmount = Convert.ToInt32(cmd.ExecuteScalar());
+
+						cmd.CommandText = "select count(*) from dt_Abook";
+						cmd.Parameters.Clear();
+						
+						int a = Convert.ToInt32(cmd.ExecuteScalar());
+
+						cmd.CommandText = "select count(*) from dt_Abook where bookState=1";
+						cmd.Parameters.Clear();
+
+						int b = Convert.ToInt32(cmd.ExecuteScalar());
+
+						borrowingRate = b / (double)a;
+
+					}
+					return 2;
+				}
 				else return 0;
 			}
 			return 0;
@@ -388,9 +439,9 @@ namespace LibrarySystemBackEnd
 		/// <param name="adminPassword"></param>
 		/// <param name="bk"></param>
 		/// <returns></returns>
-		public bool AddBook(string adminId, string adminPassword, ClassBook bk)
+		public int AddBook(string adminId, string adminPassword, ClassBook bk)
 		{
-			bool res = false;
+			int res = 0;
 			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
 			{
 				con.Open();
@@ -443,22 +494,25 @@ namespace LibrarySystemBackEnd
 							throw new Exception();
 					}
 					tra.Commit();
-					res = true;
+					res = 0;
 				}
 				catch (Exception e)
 				{
-					res = false;
+					Console.WriteLine(e.Message);
+					res = 1;
 					tra.Rollback();
 				}
 			}
 			return res;
 		}
+
 		/// <summary>
 		/// 书籍条件检索方法,将符合条件的书籍载入到book list中
 		/// </summary>
 		/// <param name="type">检索条件种类，1 全部条件，2 isbn，3 书名，4 作者，5 出版社，6标签</param>
 		/// <param name="searchInfo">检索关键词</param>
-		/// <param name="curnum">目前的访问序号</param>
+		/// <param name="curnum">目前的访问序号</param>	
+		/// <param name="linenum">总行数</param>
 		/// <returns></returns>
 		public ClassBook[] SearchBook(int type, string searchInfo, int curnum, ref int linenum)
 		{
@@ -566,6 +620,13 @@ namespace LibrarySystemBackEnd
 			return null;
 		}
 
+		/// <summary>
+		/// 获取每一本书籍的状态
+		/// </summary>
+		/// <param name="bookIsbn">书号，不带扩展</param>
+		/// <param name="curuserid">当前用户iD，访客传入空</param>
+		/// <param name="retval">返回值，表示按钮状态：0不可用,1已借阅,2可借阅,3已预约,4可预约</param>
+		/// <returns>每一本书的状态数组</returns>
 		public ClassABook[] GetBookState(string bookIsbn, string curuserid, ref int retval)
 		{
 			List<ClassABook> abk = new List<ClassABook>();
@@ -654,6 +715,11 @@ namespace LibrarySystemBackEnd
 			return abk.ToArray();
 		}
 
+		/// <summary>
+		/// 获取书籍图片
+		/// </summary>
+		/// <param name="bookIsbn">书号</param>
+		/// <returns>图片二进制</returns>
 		public byte[] GetBookPic(string bookIsbn)
 		{
 			bookIsbn = bookIsbn.Substring(0, 13);
@@ -678,6 +744,13 @@ namespace LibrarySystemBackEnd
 			return null;
 		}
 
+		/// <summary>
+		/// 获取评论，一次载10条
+		/// </summary>
+		/// <param name="bookIsbn">书号</param>
+		/// <param name="curnum">当前第几条</param>
+		/// <param name="linenum">引用返回，共几条</param>
+		/// <returns>评论</returns>
 		public ClassComment[] GetComment(string bookIsbn, int curnum, ref int linenum)
 		{
 			List<ClassComment> comment = new List<ClassComment>();
@@ -706,6 +779,13 @@ namespace LibrarySystemBackEnd
 			return comment.ToArray();
 		}
 
+		/// <summary>
+		/// 添加评论
+		/// </summary>
+		/// <param name="bookIsbn">书籍编号</param>
+		/// <param name="userId">用户ID</param>
+		/// <param name="text">内容</param>
+		/// <returns>成功失败</returns>
 		public bool AddComment(string bookIsbn, string userId, string text)
 		{
 			bool res = false;
@@ -755,6 +835,11 @@ namespace LibrarySystemBackEnd
 			return res;
 		}
 
+		/// <summary>
+		/// 删除评论
+		/// </summary>
+		/// <param name="commentIsbn">评论编号</param>
+		/// <returns>成功失败</returns>
 		public bool DelComment(string commentIsbn)
 		{
 			bool res = false;
@@ -777,6 +862,7 @@ namespace LibrarySystemBackEnd
 			}
 			return res;
 		}
+
 		/// <summary>
 		/// 预约书籍
 		/// </summary>
@@ -858,6 +944,12 @@ namespace LibrarySystemBackEnd
 			return res;
 		}
 
+		/// <summary>
+		/// 获取用户详细信息
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="userPassword">用户密码</param>
+		/// <returns>包含用户信息的类</returns>
 		public ClassUser GetUserDetail(string userId, string userPassword)
 		{
 			ClassUserBasicInfo userBasic = getUsersBasic(userId);
@@ -867,6 +959,7 @@ namespace LibrarySystemBackEnd
 			}
 			return getUserDetail(userId, userBasic);
 		}
+
 		/// <summary>
 		/// 修改用户信息
 		/// </summary>
@@ -903,6 +996,13 @@ namespace LibrarySystemBackEnd
 			return res;
 		}
 
+		/// <summary>
+		/// 还书
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="userPassword">用户密码</param>
+		/// <param name="bookIsbn">书籍ISBN，带扩展</param>
+		/// <returns>0成功，12失败</returns>
 		public int ReturnBook(string userId, string userPassword, string bookIsbn)
 		{
 			ClassUserBasicInfo userBasic = getUsersBasic(userId);
@@ -1066,6 +1166,13 @@ namespace LibrarySystemBackEnd
 			return res;
 		}
 
+		/// <summary>
+		/// 取消预约
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="userPassword">用户密码</param>
+		/// <param name="bookIsbn">书籍编号</param>
+		/// <returns>0成功12失败</returns>
 		public int CancelScheduleBook(string userId, string userPassword, string bookIsbn)
 		{
 			ClassUserBasicInfo userBasic = getUsersBasic(userId);
@@ -1077,7 +1184,7 @@ namespace LibrarySystemBackEnd
 			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
 			{
 				con.Open();
-				SqlTransaction tra = null; SqlCommand cmd1; SqlDataReader rd;
+				SqlTransaction tra = null; SqlCommand cmd1;
 				try
 				{
 					tra = con.BeginTransaction();
@@ -1122,6 +1229,13 @@ namespace LibrarySystemBackEnd
 
 		}
 
+		/// <summary>
+		/// 续借
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="userPassword"></param>
+		/// <param name="bookIsbn"></param>
+		/// <returns>0成功12失败</returns>
 		public int ReBorrowBook(string userId, string userPassword, string bookIsbn)
 		{
 			ClassUserBasicInfo userBasic = getUsersBasic(userId);
@@ -1221,6 +1335,7 @@ namespace LibrarySystemBackEnd
 			}
 			return res;
 		}
+
 		/// <summary>
 		/// 加载一本书的信息
 		/// </summary>
@@ -1249,6 +1364,13 @@ namespace LibrarySystemBackEnd
 			return null;
 		}
 
+		/// <summary>
+		/// 管理员搜用户，可以搜索用户名和id
+		/// </summary>
+		/// <param name="searchInfo"></param>
+		/// <param name="curnum">当前访问条目</param>
+		/// <param name="linenum">引用返回总条目</param>
+		/// <returns>用户信息数组</returns>
 		public ClassUserBasicInfo[] AdminSearchUser(string searchInfo, int curnum, ref int linenum)
 		{
 			List<ClassUserBasicInfo> bk = new List<ClassUserBasicInfo>();
@@ -1272,6 +1394,13 @@ namespace LibrarySystemBackEnd
 			return bk.ToArray();
 		}
 
+		/// <summary>
+		/// 管理员获取用户详细信息
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="adminId"></param>
+		/// <param name="adminPassword"></param>
+		/// <returns></returns>
 		public ClassUser AdminGetUser(string userId, string adminId, string adminPassword)
 		{
 			ClassAdmin admin = getAdmin(adminId);
@@ -1281,6 +1410,14 @@ namespace LibrarySystemBackEnd
 			return getUserDetail(userId, userBasic);
 		}
 
+		/// <summary>
+		/// 管理员重置用户密码
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="userNewPassword"></param>
+		/// <param name="adminId"></param>
+		/// <param name="adminPassword"></param>
+		/// <returns>0成功12失败</returns>
 		public int AdminSetUserPassword(string userId, string userNewPassword, string adminId, string adminPassword)
 		{
 			ClassAdmin admin = getAdmin(adminId);
@@ -1306,6 +1443,14 @@ namespace LibrarySystemBackEnd
 			return res;
 		}
 
+		/// <summary>
+		/// 管理员充值用户信用
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <param name="amount"></param>
+		/// <param name="adminId"></param>
+		/// <param name="adminPassword"></param>
+		/// <returns>0成功12失败</returns>
 		public int AdminChargeUser(string userId, int amount, string adminId, string adminPassword)
 		{
 			ClassAdmin admin = getAdmin(adminId);
@@ -1331,6 +1476,13 @@ namespace LibrarySystemBackEnd
 			return res;
 		}
 
+		/// <summary>
+		/// 加载书籍历史
+		/// </summary>
+		/// <param name="bookIsbn"></param>
+		/// <param name="adminId"></param>
+		/// <param name="adminPassword"></param>
+		/// <returns></returns>
 		public ClassBorrowHis[] AdminLoadABookhis(string bookIsbn, string adminId, string adminPassword)
 		{
 			ClassAdmin admin = getAdmin(adminId);
@@ -1383,5 +1535,40 @@ namespace LibrarySystemBackEnd
 
 			return his.ToArray();
 		}
+
+		/// <summary>
+		/// 获取预约的用户
+		/// </summary>
+		/// <param name="bookIsbn">书号</param>
+		/// <returns></returns>
+		public ClassBorrowHis[] AdminGetScheduleUser(string bookIsbn)
+		{
+			List<ClassBorrowHis> his = new List<ClassBorrowHis>();
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString))
+			{
+				con.Open();
+				SqlCommand cmd = new SqlCommand();
+				cmd.Connection = con;
+				cmd.CommandText = "select * from dt_Schedule where (bookIsbn = @a)";
+				cmd.Parameters.Clear();
+				cmd.Parameters.AddWithValue("@a", bookIsbn);
+				SqlDataReader dr = cmd.ExecuteReader();
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						ClassBorrowHis bk = new ClassBorrowHis();
+						bk.UserId = dr["userId"].ToString();
+						bk.BorrowTime = DateTime.Parse(dr["scheduleDate"].ToString());
+						his.Add(bk);
+					}
+				}
+				dr.Close();
+			}
+
+			return his.ToArray();
+		}
+
+		#endregion
 	}
 }

@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd
 {
-	public class ClassBorrowHis
+	/// <summary>
+	/// 借阅历史封装类
+	/// </summary>
+	internal class ClassBorrowHis
 	{
 		private string userId;
 		private ClassABook aBook;
 		private DateTime borrowTime;
 		private DateTime returnTime;
 
-		public string UserId
+		/// <summary>
+		/// 用户Id
+		/// </summary>
+		internal string UserId
 		{
 			get
 			{
@@ -26,7 +32,10 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
-		public ClassABook ABook
+		/// <summary>
+		/// 该历史记录对应的书籍
+		/// </summary>
+		internal ClassABook ABook
 		{
 			get
 			{
@@ -39,7 +48,10 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
-		public DateTime BorrowTime
+		/// <summary>
+		/// 借阅时间
+		/// </summary>
+		internal DateTime BorrowTime
 		{
 			get
 			{
@@ -52,7 +64,10 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
-		public DateTime ReturnTime
+		/// <summary>
+		/// 归还时间
+		/// </summary>
+		internal DateTime ReturnTime
 		{
 			get
 			{
