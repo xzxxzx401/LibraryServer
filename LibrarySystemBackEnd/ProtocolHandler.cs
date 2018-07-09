@@ -7,17 +7,37 @@ using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd
 {
+	/// <summary>
+	/// 协议处理类，辅助
+	/// </summary>
 	class ProtocolHandler
 	{
+		/// <summary>
+		/// 缓存不完整的部分字符串
+		/// </summary>
 		private string partialProtocal;
+		
 		public ProtocolHandler()
 		{
 			partialProtocal = "";
 		}
+
+		/// <summary>
+		/// 获取协议
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns></returns>
 		public string[] GetProtocol(string input)
 		{
 			return GetProtocol(input, null);
 		}
+
+		/// <summary>
+		/// 获取协议
+		/// </summary>
+		/// <param name="input"></param>
+		/// <param name="outputList"></param>
+		/// <returns></returns>
 		public string[] GetProtocol(string input,List<string> outputList)
 		{
 			if (outputList == null) 

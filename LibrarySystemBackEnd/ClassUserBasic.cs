@@ -13,7 +13,7 @@ namespace LibrarySystemBackEnd
 	/// <summary>
 	/// 用户种类,0学生1老师2管理员3书籍管理员4访客
 	/// </summary>
-	public enum USERTYPE
+	enum USERTYPE
 	{
 		/// <summary>
 		/// 学生
@@ -37,11 +37,18 @@ namespace LibrarySystemBackEnd
 		Guest = 4
 	};
 
-	public class ClassUserBasicInfo
+	class ClassUserBasicInfo
 	{
-		
+		#region 只读
+		/// <summary>
+		/// 最大预约数量
+		/// </summary>
 		public static readonly int MaxScheduleAmount = 5;
+		/// <summary>
+		/// 最大信用
+		/// </summary>
 		public static readonly int MaxCredit = 100;
+		#endregion
 
 		#region 私有属性
 		private string userId;
@@ -263,6 +270,7 @@ namespace LibrarySystemBackEnd
 			else if (this.userType == USERTYPE.Lecturer) UserCurrentMaxBorrowableAmount = UserMaxBorrowableAmount = 20;
 			else UserCurrentMaxBorrowableAmount = 0;
 		}
+
 		public ClassUserBasicInfo(string id)
 		{
 			this.userId = id;
@@ -286,11 +294,11 @@ namespace LibrarySystemBackEnd
 			this.userCredit = (int)dr["userCredit"];
 			this.userRegisterDate = (DateTime)dr["userRegisterDate"];
 		}
-
-		public override string ToString()
-		{
-			return String.Format("<UserBasic userId=\"{0}\" userName=\"{1}\" userPassword=\"{2}\" userSchool=\"{3}\" userType=\"{4}\" userCurrentScheduleAmount=\"{5}\" userCurrentBorrowedAmount=\"{6}\" userCurrentMaxBorrowableAmount=\"{7}\" userCredit=\"{8}\" userRegisterDate=\"{9}\">", UserId, UserName, UserPassword, UserType, UserCurrentScheduleAmount, UserCurrentBorrowedAmount, UserCurrentMaxBorrowableAmount, UserCredit);
-		}
+		
+		/// <summary>
+		/// XML构造器
+		/// </summary>
+		/// <param name="node"></param>
 		internal ClassUserBasicInfo(XmlNode node)
 		{
 			userId = node.Attributes["userId"]==null?"": node.Attributes["userId"].Value;

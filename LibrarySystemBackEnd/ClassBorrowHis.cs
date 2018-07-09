@@ -4,49 +4,78 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd {
-	public class ClassBorrowHis {
+namespace LibrarySystemBackEnd
+{
+	/// <summary>
+	/// 借阅历史封装类
+	/// </summary>
+	internal class ClassBorrowHis
+	{
 		private string userId;
 		private ClassABook aBook;
 		private DateTime borrowTime;
 		private DateTime returnTime;
 
-		public string UserId {
-			get {
+		/// <summary>
+		/// 用户Id
+		/// </summary>
+		internal string UserId
+		{
+			get
+			{
 				return userId;
 			}
 
-			set {
+			set
+			{
 				userId = value;
 			}
 		}
 
-		public ClassABook ABook {
-			get {
+		/// <summary>
+		/// 该历史记录对应的书籍
+		/// </summary>
+		internal ClassABook ABook
+		{
+			get
+			{
 				return aBook;
 			}
 
-			set {
+			set
+			{
 				aBook = value;
 			}
 		}
 
-		public DateTime BorrowTime {
-			get {
+		/// <summary>
+		/// 借阅时间
+		/// </summary>
+		internal DateTime BorrowTime
+		{
+			get
+			{
 				return borrowTime;
 			}
 
-			set {
+			set
+			{
 				borrowTime = value;
 			}
 		}
 
-		public DateTime ReturnTime {
-			get {
+		/// <summary>
+		/// 归还时间
+		/// </summary>
+		internal DateTime ReturnTime
+		{
+			get
+			{
 				return returnTime;
 			}
 
-			set {
+			set
+			{
 				returnTime = value;
 			}
 		}

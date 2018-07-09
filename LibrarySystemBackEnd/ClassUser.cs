@@ -6,23 +6,28 @@ using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd
 {
-	public class ClassUser
+	/// <summary>
+	/// 用户类
+	/// </summary>
+	class ClassUser
 	{
-		private ClassUserBasicInfo userBasic;
-		private List<ClassABook> borrowedBooks;
-		private List<ClassABook> scheduledBooks;
-		private List<ClassABook> borrowHis;
-		private List<string> informations;
+		#region 私有变量
+		private ClassUserBasicInfo userBasic;//用户基本信息
+		private List<ClassABook> borrowedBooks;//已借阅书籍
+		private List<ClassABook> scheduledBooks;//预约书籍
+		private List<ClassABook> borrowHis;//借阅历史
+		private List<string> informations;//通知
+		#endregion
 
 		public ClassUser(ClassUserBasicInfo userBasic)
 		{
 			this.userBasic = userBasic;
 		}
-		public ClassUser(string userId)
-		{
-			this.userBasic = new ClassUserBasicInfo(userId);
-		}
-
+		
+		#region 访问器
+		/// <summary>
+		/// 用户基本信息
+		/// </summary>
 		public ClassUserBasicInfo UserBasic
 		{
 			get
@@ -36,6 +41,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 借阅书籍
+		/// </summary>
 		public List<ClassABook> BorrowedBooks
 		{
 			get
@@ -49,6 +57,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 预约书籍
+		/// </summary>
 		public List<ClassABook> ScheduledBooks
 		{
 			get
@@ -62,6 +73,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 借阅历史
+		/// </summary>
 		public List<ClassABook> BorrowHis
 		{
 			get
@@ -75,6 +89,9 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
+		/// <summary>
+		/// 通知
+		/// </summary>
 		public List<string> Informations
 		{
 			get
@@ -87,5 +104,7 @@ namespace LibrarySystemBackEnd
 				informations = value;
 			}
 		}
+
+		#endregion
 	}
 }
