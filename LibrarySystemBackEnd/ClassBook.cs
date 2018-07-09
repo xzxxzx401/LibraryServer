@@ -10,13 +10,11 @@ using System.Reflection;
 using System.Data.Common;
 using System.Security.Cryptography;
 
-namespace LibrarySystemBackEnd
-{
+namespace LibrarySystemBackEnd {
 	/// <summary>
 	/// 书籍类
 	/// </summary>
-	public class ClassBook
-	{
+	public class ClassBook {
 		#region PrivateProperty
 		private string bookName;
 		private string bookIsbn;//书籍号，不带扩展
@@ -36,15 +34,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书名
 		/// </summary>
-		public string BookName
-		{
-			get
-			{
+		public string BookName {
+			get {
 				return bookName;
 			}
 
-			set
-			{
+			set {
 				bookName = value;
 			}
 		}
@@ -52,15 +47,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书号，不带扩展
 		/// </summary>
-		public string BookIsbn
-		{
-			get
-			{
+		public string BookIsbn {
+			get {
 				return bookIsbn;
 			}
 
-			internal set
-			{
+			internal set {
 				bookIsbn = value;
 			}
 		}
@@ -68,15 +60,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 出版社
 		/// </summary>
-		public string BookPublisher
-		{
-			get
-			{
+		public string BookPublisher {
+			get {
 				return bookPublisher;
 			}
 
-			set
-			{
+			set {
 				bookPublisher = value;
 			}
 		}
@@ -84,15 +73,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 作者
 		/// </summary>
-		public string BookAuthor
-		{
-			get
-			{
+		public string BookAuthor {
+			get {
 				return bookAuthor;
 			}
 
-			set
-			{
+			set {
 				bookAuthor = value;
 			}
 		}
@@ -100,15 +86,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍封面文件地址
 		/// </summary>
-		public byte[] BookImage
-		{
-			get
-			{
+		public byte[] BookImage {
+			get {
 				return bookImage;
 			}
 
-			set
-			{
+			set {
 				bookImage = value;
 			}
 		}
@@ -117,15 +100,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 简介
 		/// </summary>
-		public string BookIntroduction
-		{
-			get
-			{
+		public string BookIntroduction {
+			get {
 				return bookIntroduction;
 			}
 
-			set
-			{
+			set {
 				bookIntroduction = value;
 			}
 		}
@@ -133,15 +113,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍数量
 		/// </summary>
-		public int BookAmount
-		{
-			get
-			{
+		public int BookAmount {
+			get {
 				return bookAmount;
 			}
 
-			internal set
-			{
+			internal set {
 				bookAmount = value;
 			}
 		}
@@ -149,10 +126,8 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 每一本书
 		/// </summary>
-		public List<ClassABook> Book
-		{
-			get
-			{
+		public List<ClassABook> Book {
+			get {
 				return books;
 			}
 		}
@@ -160,15 +135,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍标签第一个
 		/// </summary>
-		public string BookLable1
-		{
-			get
-			{
+		public string BookLable1 {
+			get {
 				return bookLable[0];
 			}
 
-			set
-			{
+			set {
 				bookLable[0] = value;
 			}
 		}
@@ -176,15 +148,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍标签第二个
 		/// </summary>
-		public string BookLable2
-		{
-			get
-			{
+		public string BookLable2 {
+			get {
 				return bookLable[1];
 			}
 
-			set
-			{
+			set {
 				bookLable[1] = value;
 			}
 		}
@@ -192,23 +161,18 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍标签第三个
 		/// </summary>
-		public string BookLable3
-		{
-			get
-			{
+		public string BookLable3 {
+			get {
 				return bookLable[2];
 			}
 
-			set
-			{
+			set {
 				bookLable[2] = value;
 			}
 		}
 
-		public string BookPicHash
-		{
-			get
-			{
+		public string BookPicHash {
+			get {
 				MD5 md5 = MD5.Create();
 				byte[] data = md5.ComputeHash(bookImage);
 
@@ -216,8 +180,7 @@ namespace LibrarySystemBackEnd
 				StringBuilder sBuilder = new StringBuilder();
 
 				// 循环遍历哈希数据的每一个字节并格式化为十六进制字符串  
-				for (int i = 0; i < data.Length; i++)
-				{
+				for (int i = 0; i < data.Length; i++) {
 					sBuilder.Append(data[i].ToString("x2"));
 				}
 				// 返回十六进制字符串
@@ -227,15 +190,12 @@ namespace LibrarySystemBackEnd
 			}
 		}
 
-		public DateTime BookPublishTime
-		{
-			get
-			{
+		public DateTime BookPublishTime {
+			get {
 				return bookPublishTime;
 			}
 
-			set
-			{
+			set {
 				bookPublishTime = value;
 			}
 		}
@@ -297,8 +257,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="bookLable1">标签1</param>
 		/// <param name="bookLable2">标签2</param>
 		/// <param name="bookLable3">标签3</param>
-		internal ClassBook(string bookName, string bookIsbn, int bookAmount, DateTime broughtTime, DateTime publishTime, string adminId, string bookLable1, string bookLable2, string bookLable3, string bookPublisher, string bookAuthor, byte[] bookImage, string bookIntroduction)
-		{
+		internal ClassBook(string bookName, string bookIsbn, int bookAmount, DateTime broughtTime, DateTime publishTime, string adminId, string bookLable1, string bookLable2, string bookLable3, string bookPublisher, string bookAuthor, byte[] bookImage, string bookIntroduction) {
 			this.bookName = bookName;
 			this.bookIsbn = bookIsbn;
 			this.bookPublisher = bookPublisher;
@@ -313,18 +272,16 @@ namespace LibrarySystemBackEnd
 			this.scheduleQueue = new LinkedList<string>();
 
 
-			for (int i = 0; i < BookAmount; i++)
-			{
+			for (int i = 0; i < BookAmount; i++) {
 				Book.Add(new ClassABook(bookName, bookIsbn + i.ToString("D4"), bookPublisher, bookAuthor, bookImage, publishTime, broughtTime));
 				//UpdateHistory(Book.Last().BookIsbn, new ClassBookHis(broughtTime, adminId, 0));
 			}
 		}
-		internal ClassBook(string bookIsbn)
-		{
+		internal ClassBook(string bookIsbn) {
 			this.bookIsbn = bookIsbn;
+			this.bookLable = new string[3];
 		}
-		public ClassBook(DbDataReader dr)
-		{
+		public ClassBook(DbDataReader dr) {
 			this.bookName = dr["bookName"].ToString();
 			this.bookIsbn = dr["bookIsbn"].ToString();
 			this.bookPublisher = dr["bookPublisher"].ToString();

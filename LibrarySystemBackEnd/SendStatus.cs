@@ -1,30 +1,27 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
-	class SendStatus
-	{
+namespace LibrarySystemBackEnd {
+	class SendStatus {
 		private FileInfo info;
 		private long fileBytes;
+		private ILog LOGGER = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public SendStatus(string filePath)
-		{
+		public SendStatus(string filePath) {
 			info = new FileInfo(filePath);
 			fileBytes = info.Length;
 		}
-		public void PrintStatus(int sent)
-		{
+		public void PrintStatus(int sent) {
 			string percent = GetPercent(sent);
-			Console.WriteLine("Sending {0} bytes, {1}% ...", sent, percent);
+			LOGGER.InfoFormat("Sending {0} bytes, {1}% ...", sent, percent);
 		}
 
-		public string GetPercent(int sent)
-		{
+		public string GetPercent(int sent) {
 			decimal allBytes = Convert.ToDecimal(fileBytes);
 			decimal currentSent = Convert.ToDecimal(sent);
 

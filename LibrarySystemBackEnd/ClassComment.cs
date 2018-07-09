@@ -5,73 +5,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
-	public class ClassComment
-	{
+namespace LibrarySystemBackEnd {
+	public class ClassComment {
 		private string commentIsbn;
 		private string userId;
 		private DateTime commentTime;
 		private string text;
 
-		public string CommentIsbn
-		{
-			get
-			{
+		public string CommentIsbn {
+			get {
 				return commentIsbn;
 			}
 
-			set
-			{
+			set {
 				commentIsbn = value;
 			}
 		}
 
-		public string UserId
-		{
-			get
-			{
+		public string UserId {
+			get {
 				return userId;
 			}
 
-			set
-			{
+			set {
 				userId = value;
 			}
 		}
 
-		public DateTime CommentTime
-		{
-			get
-			{
+		public DateTime CommentTime {
+			get {
 				return commentTime;
 			}
 
-			set
-			{
+			set {
 				commentTime = value;
 			}
 		}
 
-		public string Text
-		{
-			get
-			{
+		public string Text {
+			get {
 				return text;
 			}
 
-			set
-			{
+			set {
 				text = value;
 			}
 		}
 
-		public ClassComment()
-		{
+		public ClassComment() {
 
 		}
-		public ClassComment(DbDataReader dr)
-		{
+		public ClassComment(DbDataReader dr) {
 			this.commentIsbn = dr["commentIsbn"].ToString();
 			this.userId = dr["userId"].ToString();
 			this.text = dr["text"].ToString();

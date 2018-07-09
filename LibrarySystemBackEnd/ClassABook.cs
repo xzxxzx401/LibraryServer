@@ -7,13 +7,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
+namespace LibrarySystemBackEnd {
 	/// <summary>
 	/// 书籍状态 可借，已借，预约，不可用
 	/// </summary>
-	public enum BOOKSTATE
-	{
+	public enum BOOKSTATE {
 		/// <summary>
 		/// 可用，可借
 		/// </summary>
@@ -35,8 +33,7 @@ namespace LibrarySystemBackEnd
 	/// <summary>
 	/// 单一的一本书
 	/// </summary>
-	public class ClassABook
-	{
+	public class ClassABook {
 		#region PrivateProperty
 
 		private string bookName;
@@ -59,15 +56,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书名
 		/// </summary>
-		public string BookName
-		{
-			get
-			{
+		public string BookName {
+			get {
 				return bookName;
 			}
 
-			set
-			{
+			set {
 				bookName = value;
 			}
 		}
@@ -75,15 +69,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// ISBN，带扩展的书号
 		/// </summary>
-		public string BookIsbn
-		{
-			get
-			{
+		public string BookIsbn {
+			get {
 				return bookIsbn;
 			}
 
-			set
-			{
+			set {
 				bookIsbn = value;
 			}
 		}
@@ -91,15 +82,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 出版社
 		/// </summary>
-		public string BookPublisher
-		{
-			get
-			{
+		public string BookPublisher {
+			get {
 				return bookPublisher;
 			}
 
-			set
-			{
+			set {
 				bookPublisher = value;
 			}
 		}
@@ -107,15 +95,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍作者
 		/// </summary>
-		public string BookAuthor
-		{
-			get
-			{
+		public string BookAuthor {
+			get {
 				return bookAuthor;
 			}
 
-			set
-			{
+			set {
 				bookAuthor = value;
 			}
 		}
@@ -123,15 +108,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍图片地址
 		/// </summary>
-		public byte[] BookImage
-		{
-			get
-			{
+		public byte[] BookImage {
+			get {
 				return bookImage;
 			}
 
-			set
-			{
+			set {
 				bookImage = value;
 			}
 		}
@@ -139,15 +121,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍购入时间
 		/// </summary>
-		public DateTime BookBroughtTime
-		{
-			get
-			{
+		public DateTime BookBroughtTime {
+			get {
 				return bookBroughtTime;
 			}
 
-			set
-			{
+			set {
 				bookBroughtTime = value;
 			}
 		}
@@ -155,15 +134,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍状态
 		/// </summary>
-		public BOOKSTATE BookState
-		{
-			get
-			{
+		public BOOKSTATE BookState {
+			get {
 				return bookState;
 			}
 
-			set
-			{
+			set {
 				bookState = value;
 			}
 		}
@@ -171,15 +147,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍的借阅者或预约者，不存在即为空
 		/// </summary>
-		public string BorrowUserId
-		{
-			get
-			{
+		public string BorrowUserId {
+			get {
 				return borrowUserId;
 			}
 
-			set
-			{
+			set {
 				borrowUserId = value;
 			}
 		}
@@ -187,15 +160,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍的借出时间，不存在即为空
 		/// </summary>
-		public DateTime BorrowTime
-		{
-			get
-			{
+		public DateTime BorrowTime {
+			get {
 				return borrowTime;
 			}
 
-			set
-			{
+			set {
 				borrowTime = value;
 			}
 		}
@@ -203,15 +173,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍的应归还时间，不存在即为空
 		/// </summary>
-		public DateTime ReturnTime
-		{
-			get
-			{
+		public DateTime ReturnTime {
+			get {
 				return returnTime;
 			}
 
-			set
-			{
+			set {
 				returnTime = value;
 			}
 		}
@@ -219,15 +186,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍是否已被续借
 		/// </summary>
-		public bool Delayed
-		{
-			get
-			{
+		public bool Delayed {
+			get {
 				return delayed;
 			}
 
-			set
-			{
+			set {
 				delayed = value;
 			}
 		}
@@ -235,36 +199,28 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 书籍是否已被管理员回收
 		/// </summary>
-		public bool Deleted
-		{
-			get
-			{
+		public bool Deleted {
+			get {
 				return deleted;
 			}
 
-			set
-			{
+			set {
 				deleted = value;
 			}
 		}
 
-		public DateTime BookPublishDate
-		{
-			get
-			{
+		public DateTime BookPublishDate {
+			get {
 				return bookPublishDate;
 			}
 
-			set
-			{
+			set {
 				bookPublishDate = value;
 			}
 		}
 
-		public string BookPicHash
-		{
-			get
-			{
+		public string BookPicHash {
+			get {
 				MD5 md5 = MD5.Create();
 				byte[] data = md5.ComputeHash(bookImage);
 
@@ -272,8 +228,7 @@ namespace LibrarySystemBackEnd
 				StringBuilder sBuilder = new StringBuilder();
 
 				// 循环遍历哈希数据的每一个字节并格式化为十六进制字符串  
-				for (int i = 0; i < data.Length; i++)
-				{
+				for (int i = 0; i < data.Length; i++) {
 					sBuilder.Append(data[i].ToString("x2"));
 				}
 				// 返回十六进制字符串
@@ -284,29 +239,6 @@ namespace LibrarySystemBackEnd
 		}
 
 		#endregion
-
-		///// <summary>
-		///// 写入文件函数
-		///// </summary>
-		///// <param name="sw">streamwriter类型</param>
-		//internal void SaveToFile(StreamWriter sw)
-		//{
-		//	sw.WriteLine(Convert.ToInt32(Bookstate));
-		//	sw.WriteLine(Borrowuserid);
-		//	sw.WriteLine(BroughtTime.ToString());
-		//	sw.WriteLine(Extisbn);
-		//}
-		///// <summary>
-		///// 从文件的构造函数
-		///// </summary>
-		///// <param name="sr">streamreader类型</param>
-		//internal ABook(StreamReader sr)
-		//{
-		//	Bookstate = (BOOKSTATE)(System.Enum.Parse(typeof(BOOKSTATE), Convert.ToInt16(sr.ReadLine()).ToString()));
-		//	Borrowuserid = sr.ReadLine();
-		//	BroughtTime = Convert.ToDateTime(sr.ReadLine());
-		//	Extisbn = sr.ReadLine();
-		//}
 
 		/// <summary>
 		/// 完整的构造函数
@@ -324,8 +256,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="returnTime">应归还时间</param>
 		/// <param name="delayed">是否已续借</param>
 		/// <param name="deleted">是否已被管理员回收</param>
-		public ClassABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime, BOOKSTATE bookState, string borrowUserId, DateTime borrowTime, DateTime returnTime, bool delayed, bool deleted)
-		{
+		public ClassABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime, BOOKSTATE bookState, string borrowUserId, DateTime borrowTime, DateTime returnTime, bool delayed, bool deleted) {
 			this.BookName = bookName;
 			this.BookIsbn = bookIsbn;
 			this.BookPublisher = bookPublisher;
@@ -351,8 +282,7 @@ namespace LibrarySystemBackEnd
 		/// <param name="bookImage">图片地址</param>
 		/// <param name="bookPublishDate">出版时间</param>
 		/// <param name="broughtTime">购买时间</param>
-		public ClassABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime)
-		{
+		public ClassABook(string bookName, string bookIsbn, string bookPublisher, string bookAuthor, byte[] bookImage, DateTime bookPublishDate, DateTime broughtTime) {
 			this.BookName = bookName;
 			this.BookIsbn = bookIsbn;
 			this.BookPublisher = bookPublisher;
@@ -369,13 +299,11 @@ namespace LibrarySystemBackEnd
 			this.Deleted = false;
 		}
 
-		public ClassABook(string bookIsbn)
-		{
+		public ClassABook(string bookIsbn) {
 			this.bookIsbn = bookIsbn;
 		}
 
-		internal ClassABook(DbDataReader dr)
-		{
+		internal ClassABook(DbDataReader dr) {
 			this.BookName = dr["bookName"].ToString();
 			this.BookIsbn = dr["bookIsbn"].ToString();
 			this.BookPublisher = dr["bookPublisher"].ToString();

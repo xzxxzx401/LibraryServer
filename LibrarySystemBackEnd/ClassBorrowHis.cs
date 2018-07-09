@@ -4,63 +4,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
-	public class ClassBorrowHis
-	{
+namespace LibrarySystemBackEnd {
+	public class ClassBorrowHis {
 		private string userId;
 		private ClassABook aBook;
 		private DateTime borrowTime;
 		private DateTime returnTime;
 
-		public string UserId
-		{
-			get
-			{
+		public string UserId {
+			get {
 				return userId;
 			}
 
-			set
-			{
+			set {
 				userId = value;
 			}
 		}
 
-		public ClassABook ABook
-		{
-			get
-			{
+		public ClassABook ABook {
+			get {
 				return aBook;
 			}
 
-			set
-			{
+			set {
 				aBook = value;
 			}
 		}
 
-		public DateTime BorrowTime
-		{
-			get
-			{
+		public DateTime BorrowTime {
+			get {
 				return borrowTime;
 			}
 
-			set
-			{
+			set {
 				borrowTime = value;
 			}
 		}
 
-		public DateTime ReturnTime
-		{
-			get
-			{
+		public DateTime ReturnTime {
+			get {
 				return returnTime;
 			}
 
-			set
-			{
+			set {
 				returnTime = value;
 			}
 		}

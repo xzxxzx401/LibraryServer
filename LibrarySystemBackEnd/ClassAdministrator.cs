@@ -7,13 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
+namespace LibrarySystemBackEnd {
 	/// <summary>
 	/// 管理员类
 	/// </summary>
-	public class ClassAdmin
-	{
+	public class ClassAdmin {
 		#region PrivateProperty
 		private string id;
 		private string name;
@@ -24,87 +22,70 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 管理员ID
 		/// </summary>
-		public string Id
-		{
-			get
-			{
+		public string Id {
+			get {
 				return id;
 			}
 
-			internal set
-			{
+			internal set {
 				id = value;
 			}
 		}
 		/// <summary>
 		/// 管理员姓名
 		/// </summary>
-		public string Name
-		{
-			get
-			{
+		public string Name {
+			get {
 				return name;
 			}
 
-			internal set
-			{
+			internal set {
 				name = value;
 			}
 		}
 		/// <summary>
 		/// 管理员密码
 		/// </summary>
-		public string Password
-		{
-			get
-			{
+		public string Password {
+			get {
 				return password;
 			}
 
-			internal set
-			{
+			internal set {
 				password = value;
 			}
 		}
 		/// <summary>
 		/// 类型，管理员2，书籍管理员3
 		/// </summary>
-		public USERTYPE Type
-		{
-			get
-			{
+		public USERTYPE Type {
+			get {
 				return type;
 			}
 
-			set
-			{
+			set {
 				type = value;
 			}
 		}
 		/// <summary>
 		/// 注册日期
 		/// </summary>
-		public DateTime RegisterDate
-		{
-			get
-			{
+		public DateTime RegisterDate {
+			get {
 				return registerDate;
 			}
 
-			internal set
-			{
+			internal set {
 				registerDate = value;
 			}
 		}
 		#endregion
 
-		internal ClassAdmin(string id)
-		{
+		internal ClassAdmin(string id) {
 			this.id = id;
 		}
 
-		internal ClassAdmin(string id,string name,string password,USERTYPE type)
-		{
+		internal ClassAdmin(string id, string name, string password, USERTYPE type) {
 			this.id = id;
 			this.name = name;
 			this.password = password;
@@ -112,8 +93,7 @@ namespace LibrarySystemBackEnd
 			this.registerDate = DateTime.Now;
 		}
 
-		internal ClassAdmin(DbDataReader dr)
-		{
+		internal ClassAdmin(DbDataReader dr) {
 			this.id = dr["id"].ToString();
 			this.name = dr["name"].ToString();
 			this.password = dr["password"].ToString();

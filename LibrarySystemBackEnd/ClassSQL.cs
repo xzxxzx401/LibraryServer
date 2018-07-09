@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -7,11 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace LibrarySystemBackEnd
-{
-	public class ClassSQL
-	{
-		private string configFile = @"config.xml";
+namespace LibrarySystemBackEnd {
+	public class ClassSQL {
+		private string configFile = @"DataBaseConfig.xml";
 		private XmlNode sqlNode;
 		private XmlNode root;
 		private string sqlName;
@@ -19,53 +18,41 @@ namespace LibrarySystemBackEnd
 		private string loginPassword;
 		private string initialCatalog;
 		private SqlConnectionStringBuilder builder;
+		private ILog LOGGER = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public SqlConnectionStringBuilder Builder
-		{
-			get
-			{
+		public SqlConnectionStringBuilder Builder {
+			get {
 				return builder;
 			}
 
-			set
-			{
+			set {
 				builder = value;
 			}
 		}
 
-		public ClassSQL()
-		{
+		public ClassSQL() {
 			XmlDocument doc = new XmlDocument();
 			doc.Load(configFile);
 			root = doc.DocumentElement;
 			sqlNode = root.SelectSingleNode("sqlconfig");
-			sqlName = sqlNode.SelectSingleNode("sqlname").InnerText;
-			loginName = sqlNode.SelectSingleNode("loginname").InnerText;
-			loginPassword = sqlNode.SelectSingleNode("loginpassword").InnerText;
-			initialCatalog = sqlNode.SelectSingleNode("initialcatalog").InnerText;
+			sqlName = sqlNode.SelectSingleNode("sqlname").InnerText.Trim();
+			loginName = sqlNode.SelectSingleNode("loginname").InnerText.Trim();
+			loginPassword = sqlNode.SelectSingleNode("loginpassword").InnerText.Trim();
+			initialCatalog = sqlNode.SelectSingleNode("initialcatalog").InnerText.Trim();
+
+			if (sqlName == "" || loginName == "" || loginPassword == "" || initialCatalog == "") {
+				LOGGER.Error("数据库配置不正确！");
+				throw new Exception("数据库配置不正确！");
+			}
+
 			Builder = new SqlConnectionStringBuilder();
 			Builder.DataSource = sqlName;
 			Builder.UserID = loginName;
 			Builder.Password = loginPassword;
 			Builder.InitialCatalog = initialCatalog;
 		}
-		public void Print()
-		{
+		public void Print() {
 			Console.WriteLine(sqlName + "\n" + loginName + "\n" + loginPassword);
 		}
-
-		public DataSet Query(string SQLstr, string tableName)
-		{
-			DataSet ds = new DataSet();
-			using (SqlConnection con = new SqlConnection(Builder.ConnectionString))
-			{
-				con.Open();
-				SqlDataAdapter SQLda = new SqlDataAdapter(SQLstr, con);
-				SQLda.Fill(ds, tableName);
-			}
-			return ds;
-		}
-	
-		
 	}
 }
