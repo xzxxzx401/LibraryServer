@@ -73,7 +73,6 @@
     <Compile Include="ClassBorrowHis.cs" />
     <Compile Include="ClassComment.cs" />
     <None Include="app.config" />
-    <None Include="_ClassUser.cs" />
     <Compile Include="ClassUser.cs" />
     <Compile Include="Protocol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,8 +101,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(TargetDir)DataBaseConfig.xml" copy $(ProjectDir)Configs/DataBaseConfigTemplate.xml $(TargetDir)DataBaseConfig.xml
-if not exist "$(TargetDir)log4net.config" copy $(ProjectDir)Configs/log4net.config $(TargetDir)log4net.config</PostBuildEvent>
+    <PostBuildEvent>if not exist "$(TargetDir)DataBaseConfig.xml" copy $(ProjectDir)Configs\DataBaseConfigTemplate.xml $(TargetDir)DataBaseConfig.xml
+if not exist "$(TargetDir)log4net.config" copy $(ProjectDir)Configs\log4net.config $(TargetDir)log4net.config</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

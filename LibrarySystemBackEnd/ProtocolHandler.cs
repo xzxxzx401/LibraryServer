@@ -5,20 +5,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
+namespace LibrarySystemBackEnd {
 	/// <summary>
 	/// 协议处理类，辅助
 	/// </summary>
-	class ProtocolHandler
-	{
+	class ProtocolHandler {
 		/// <summary>
 		/// 缓存不完整的部分字符串
 		/// </summary>
 		private string partialProtocal;
-		
-		public ProtocolHandler()
-		{
+
+		public ProtocolHandler() {
 			partialProtocal = "";
 		}
 
@@ -27,8 +24,7 @@ namespace LibrarySystemBackEnd
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public string[] GetProtocol(string input)
-		{
+		public string[] GetProtocol(string input) {
 			return GetProtocol(input, null);
 		}
 
@@ -38,18 +34,16 @@ namespace LibrarySystemBackEnd
 		/// <param name="input"></param>
 		/// <param name="outputList"></param>
 		/// <returns></returns>
-		public string[] GetProtocol(string input,List<string> outputList)
-		{
-			if (outputList == null) 
+		public string[] GetProtocol(string input, List<string> outputList) {
+			if (outputList == null)
 				outputList = new List<string>();
 			if (String.IsNullOrEmpty(input))
 				return outputList.ToArray();
 			if (!String.IsNullOrEmpty(partialProtocal))
 				input = partialProtocal + input;
-			string pattern= "(^<protocol>.*?</protocol>)";
+			string pattern = "(^<protocol>.*?</protocol>)";
 
-			if (Regex.IsMatch(input,pattern,RegexOptions.Singleline))
-			{
+			if (Regex.IsMatch(input, pattern, RegexOptions.Singleline)) {
 				string match = Regex.Match(input, pattern, RegexOptions.Singleline).Groups[0].Value;
 				outputList.Add(match);
 				partialProtocal = "";
@@ -57,9 +51,7 @@ namespace LibrarySystemBackEnd
 				input = input.Substring(match.Length);
 
 				GetProtocol(input, outputList);
-			}
-			else
-			{
+			} else {
 				partialProtocal = input;
 			}
 			return outputList.ToArray();

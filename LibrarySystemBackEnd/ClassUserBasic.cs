@@ -8,13 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace LibrarySystemBackEnd
-{
+namespace LibrarySystemBackEnd {
 	/// <summary>
 	/// 用户种类,0学生1老师2管理员3书籍管理员4访客
 	/// </summary>
-	enum USERTYPE
-	{
+	enum USERTYPE {
 		/// <summary>
 		/// 学生
 		/// </summary>
@@ -37,8 +35,7 @@ namespace LibrarySystemBackEnd
 		Guest = 4
 	};
 
-	class ClassUserBasicInfo
-	{
+	class ClassUserBasicInfo {
 		#region 只读
 		/// <summary>
 		/// 最大预约数量
@@ -61,10 +58,10 @@ namespace LibrarySystemBackEnd
 		private int userCurrentBorrowedAmount;//当前借书数量
 		private int userCurrentMaxBorrowableAmount;//当前最大可借数量
 		private int userCredit;///信用
-							   ///满分100
-							   ///每逾期3天还书信用减1
-							   ///借书数量是信用百分比乘最大借书数量向上取整
-							   ///交钱恢复信用一元一点信用
+													 ///满分100
+													 ///每逾期3天还书信用减1
+													 ///借书数量是信用百分比乘最大借书数量向上取整
+													 ///交钱恢复信用一元一点信用
 		private DateTime userRegisterDate;
 		#endregion
 
@@ -72,150 +69,120 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 用户名
 		/// </summary>
-		public string UserName
-		{
-			get
-			{
+		public string UserName {
+			get {
 				return userName;
 			}
 
-			internal set
-			{
+			internal set {
 				userName = value;
 			}
 		}
 		/// <summary>
 		/// 用户id
 		/// </summary>
-		public string UserId
-		{
-			get
-			{
+		public string UserId {
+			get {
 				return userId;
 			}
 
-			internal set
-			{
+			internal set {
 				userId = value;
 			}
 		}
 		/// <summary>
 		/// 用户密码
 		/// </summary>
-		public string UserPassword
-		{
-			get
-			{
+		public string UserPassword {
+			get {
 				return userPassword;
 			}
 
-			internal set
-			{
+			internal set {
 				userPassword = value;
 			}
 		}
 		/// <summary>
 		/// 学院
 		/// </summary>
-		public string UserSchool
-		{
-			get
-			{
+		public string UserSchool {
+			get {
 				return userSchool;
 			}
 
-			internal set
-			{
+			internal set {
 				userSchool = value;
 			}
 		}
 		/// <summary>
 		/// 用户种类 学生 老师 访客
 		/// </summary>
-		public USERTYPE UserType
-		{
-			get
-			{
+		public USERTYPE UserType {
+			get {
 				return userType;
 			}
 
-			internal set
-			{
+			internal set {
 				userType = value;
 			}
 		}
 		/// <summary>
 		/// 当前预约书籍数量
 		/// </summary>
-		public int UserCurrentScheduleAmount
-		{
-			get
-			{
+		public int UserCurrentScheduleAmount {
+			get {
 				return userCurrentScheduleAmount;
 			}
 
-			internal set
-			{
+			internal set {
 				userCurrentScheduleAmount = value;
 			}
 		}
 		/// <summary>
 		/// 最大可借数量，依据用户种类而定
 		/// </summary>
-		public int UserMaxBorrowableAmount
-		{
-			get
-			{
+		public int UserMaxBorrowableAmount {
+			get {
 				return userMaxBorrowableAmount;
 			}
 
-			internal set
-			{
+			internal set {
 				userMaxBorrowableAmount = value;
 			}
 		}
 		/// <summary>
 		/// 当前借书数量
 		/// </summary>
-		public int UserCurrentBorrowedAmount
-		{
-			get
-			{
+		public int UserCurrentBorrowedAmount {
+			get {
 				return userCurrentBorrowedAmount;
 			}
 
-			internal set
-			{
+			internal set {
 				userCurrentBorrowedAmount = value;
 			}
 		}
 		/// <summary>
 		/// 当前最大借书数量，最大借书数量乘以信用百分比
 		/// </summary>
-		public int UserCurrentMaxBorrowableAmount
-		{
-			get
-			{
+		public int UserCurrentMaxBorrowableAmount {
+			get {
 				return userCurrentMaxBorrowableAmount;
 			}
 
-			internal set
-			{
+			internal set {
 				userCurrentMaxBorrowableAmount = value;
 			}
 		}
 		/// <summary>
 		/// 信用
 		/// </summary>
-		public int UserCredit
-		{
-			get
-			{
+		public int UserCredit {
+			get {
 				return userCredit;
 			}
 
-			internal set
-			{
+			internal set {
 				if (value > 100) userCredit = 100;
 				else userCredit = value;
 			}
@@ -223,10 +190,8 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 注册日期
 		/// </summary>
-		public string UserRegisterDateToString
-		{
-			get
-			{
+		public string UserRegisterDateToString {
+			get {
 				var a = UserRegisterDate.Year.ToString("D4");
 				var b = UserRegisterDate.Month.ToString("D2");
 				var c = UserRegisterDate.Day.ToString("D2");
@@ -236,15 +201,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 注册日期
 		/// </summary>
-		public DateTime UserRegisterDate
-		{
-			get
-			{
+		public DateTime UserRegisterDate {
+			get {
 				return userRegisterDate;
 			}
 
-			internal set
-			{
+			internal set {
 				userRegisterDate = value;
 			}
 		}
@@ -252,8 +214,7 @@ namespace LibrarySystemBackEnd
 
 		#endregion
 
-		internal ClassUserBasicInfo(string id, string name, string password, string school, USERTYPE type)
-		{
+		internal ClassUserBasicInfo(string id, string name, string password, string school, USERTYPE type) {
 			UserId = id;
 			UserName = name;
 			UserPassword = password;
@@ -271,8 +232,7 @@ namespace LibrarySystemBackEnd
 			else UserCurrentMaxBorrowableAmount = 0;
 		}
 
-		public ClassUserBasicInfo(string id)
-		{
+		public ClassUserBasicInfo(string id) {
 			this.userId = id;
 		}
 
@@ -280,8 +240,7 @@ namespace LibrarySystemBackEnd
 		/// 数据库构造函数
 		/// </summary>
 		/// <param name="dr">数据库阅读器</param>
-		internal ClassUserBasicInfo(DbDataReader dr)
-		{
+		internal ClassUserBasicInfo(DbDataReader dr) {
 			this.userId = dr["userId"].ToString();
 			this.userName = dr["userName"].ToString();
 			this.userPassword = dr["userPassword"].ToString();
@@ -294,19 +253,18 @@ namespace LibrarySystemBackEnd
 			this.userCredit = (int)dr["userCredit"];
 			this.userRegisterDate = (DateTime)dr["userRegisterDate"];
 		}
-		
+
 		/// <summary>
 		/// XML构造器
 		/// </summary>
 		/// <param name="node"></param>
-		internal ClassUserBasicInfo(XmlNode node)
-		{
-			userId = node.Attributes["userId"]==null?"": node.Attributes["userId"].Value;
-			userName = node.Attributes["userName"]==null?"": node.Attributes["userName"].Value;
-			userPassword = node.Attributes["userPassword"]==null?"": node.Attributes["userPassword"].Value;
-			userSchool = node.Attributes["userSchool"]==null?"": node.Attributes["userSchool"].Value;
+		internal ClassUserBasicInfo(XmlNode node) {
+			userId = node.Attributes["userId"] == null ? "" : node.Attributes["userId"].Value;
+			userName = node.Attributes["userName"] == null ? "" : node.Attributes["userName"].Value;
+			userPassword = node.Attributes["userPassword"] == null ? "" : node.Attributes["userPassword"].Value;
+			userSchool = node.Attributes["userSchool"] == null ? "" : node.Attributes["userSchool"].Value;
 			userType = (USERTYPE)Enum.Parse(typeof(USERTYPE), node.Attributes["userType"] == null ? "Student" : node.Attributes["userType"].Value);
-			userCredit = Convert.ToInt32(node.Attributes["userCredit"]==null?"0": node.Attributes["userCredit"].Value);
+			userCredit = Convert.ToInt32(node.Attributes["userCredit"] == null ? "0" : node.Attributes["userCredit"].Value);
 		}
 
 	}

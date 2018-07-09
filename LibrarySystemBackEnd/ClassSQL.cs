@@ -51,8 +51,5 @@ namespace LibrarySystemBackEnd {
 			Builder.Password = loginPassword;
 			Builder.InitialCatalog = initialCatalog;
 		}
-		public void Print() {
-			Console.WriteLine(sqlName + "\n" + loginName + "\n" + loginPassword);
-		}
 	}
 }

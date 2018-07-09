@@ -5,13 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
+namespace LibrarySystemBackEnd {
 	/// <summary>
 	/// 评论类
 	/// </summary>
-	public class ClassComment
-	{
+	public class ClassComment {
 		private string commentIsbn;
 		private string userId;
 		private DateTime commentTime;
@@ -20,15 +18,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 评论编号，书籍ISBN+时间戳
 		/// </summary>
-		public string CommentIsbn
-		{
-			get
-			{
+		public string CommentIsbn {
+			get {
 				return commentIsbn;
 			}
 
-			set
-			{
+			set {
 				commentIsbn = value;
 			}
 		}
@@ -36,15 +31,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 用户ID
 		/// </summary>
-		public string UserId
-		{
-			get
-			{
+		public string UserId {
+			get {
 				return userId;
 			}
 
-			set
-			{
+			set {
 				userId = value;
 			}
 		}
@@ -52,15 +44,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 评论发表时间
 		/// </summary>
-		public DateTime CommentTime
-		{
-			get
-			{
+		public DateTime CommentTime {
+			get {
 				return commentTime;
 			}
 
-			set
-			{
+			set {
 				commentTime = value;
 			}
 		}
@@ -68,15 +57,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 评论内容
 		/// </summary>
-		public string Text
-		{
-			get
-			{
+		public string Text {
+			get {
 				return text;
 			}
 
-			set
-			{
+			set {
 				text = value;
 			}
 		}
@@ -84,8 +70,7 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 构造
 		/// </summary>
-		public ClassComment()
-		{
+		public ClassComment() {
 
 		}
 
@@ -93,8 +78,7 @@ namespace LibrarySystemBackEnd
 		/// 数据库构造
 		/// </summary>
 		/// <param name="dr"></param>
-		public ClassComment(DbDataReader dr)
-		{
+		public ClassComment(DbDataReader dr) {
 			this.commentIsbn = dr["commentIsbn"].ToString();
 			this.userId = dr["userId"].ToString();
 			this.text = dr["text"].ToString();

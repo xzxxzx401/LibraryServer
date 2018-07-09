@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystemBackEnd
-{
+namespace LibrarySystemBackEnd {
 	/// <summary>
 	/// 用户类
 	/// </summary>
-	class ClassUser
-	{
+	class ClassUser {
 		#region 私有变量
 		private ClassUserBasicInfo userBasic;//用户基本信息
 		private List<ClassABook> borrowedBooks;//已借阅书籍
@@ -19,24 +17,20 @@ namespace LibrarySystemBackEnd
 		private List<string> informations;//通知
 		#endregion
 
-		public ClassUser(ClassUserBasicInfo userBasic)
-		{
+		public ClassUser(ClassUserBasicInfo userBasic) {
 			this.userBasic = userBasic;
 		}
-		
+
 		#region 访问器
 		/// <summary>
 		/// 用户基本信息
 		/// </summary>
-		public ClassUserBasicInfo UserBasic
-		{
-			get
-			{
+		public ClassUserBasicInfo UserBasic {
+			get {
 				return userBasic;
 			}
 
-			set
-			{
+			set {
 				userBasic = value;
 			}
 		}
@@ -44,15 +38,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 借阅书籍
 		/// </summary>
-		public List<ClassABook> BorrowedBooks
-		{
-			get
-			{
+		public List<ClassABook> BorrowedBooks {
+			get {
 				return borrowedBooks;
 			}
 
-			set
-			{
+			set {
 				borrowedBooks = value;
 			}
 		}
@@ -60,15 +51,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 预约书籍
 		/// </summary>
-		public List<ClassABook> ScheduledBooks
-		{
-			get
-			{
+		public List<ClassABook> ScheduledBooks {
+			get {
 				return scheduledBooks;
 			}
 
-			set
-			{
+			set {
 				scheduledBooks = value;
 			}
 		}
@@ -76,15 +64,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 借阅历史
 		/// </summary>
-		public List<ClassABook> BorrowHis
-		{
-			get
-			{
+		public List<ClassABook> BorrowHis {
+			get {
 				return borrowHis;
 			}
 
-			set
-			{
+			set {
 				borrowHis = value;
 			}
 		}
@@ -92,15 +77,12 @@ namespace LibrarySystemBackEnd
 		/// <summary>
 		/// 通知
 		/// </summary>
-		public List<string> Informations
-		{
-			get
-			{
+		public List<string> Informations {
+			get {
 				return informations;
 			}
 
-			set
-			{
+			set {
 				informations = value;
 			}
 		}
