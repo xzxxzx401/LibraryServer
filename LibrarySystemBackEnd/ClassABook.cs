@@ -273,11 +273,11 @@ namespace LibrarySystemBackEnd {
 
 		internal ClassABook(DbDataReader dr) {
 			this.BookName = dr["bookName"].ToString();
-			this.BookIsbn = dr["bookIsbn"].ToString();
+			this.BookIsbn = dr["bookIsbn"].ToString()+dr["suffix"].ToString();
 			this.BookPublisher = dr["bookPublisher"].ToString();
 			this.BookAuthor = dr["bookAuthor"].ToString();
 			this.BookImage = (byte[])dr["bookImage"];
-			this.BookPublishDate = (DateTime)dr["bookPublishDate"];
+			this.BookPublishDate = (DateTime)dr["bookPublishTime"];
 			this.BookBroughtTime = (DateTime)dr["bookBroughtTime"];
 
 			this.BookState = (BOOKSTATE)Enum.ToObject(typeof(BOOKSTATE), dr["bookState"]);

@@ -147,7 +147,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlCommand cmd = new SqlCommand();
 				cmd.Connection = con;
-				cmd.CommandText = "select * from dt_Abook where (borrowUserId = @a)";
+				cmd.CommandText = "select * from dt_Books where (borrowUserId = @a)";
 				cmd.Parameters.Clear();
 				cmd.Parameters.AddWithValue("@a", userId);
 
@@ -353,8 +353,8 @@ namespace LibrarySystemBackEnd {
 									borrowUserId = '" + userid +
 									"', borrowTime = '" + DateTime.Now +
 									@"', returnTime = '" + (DateTime.Now + DefaultDate) +
-									"'where bookIsbn like '" + bookid +
-									"%' and (bookState = 2 and borrowUserId = '" + userid + "')";
+									"'where bookIsbn ='" + bookid +
+									"' and (bookState = 2 and borrowUserId = '" + userid + "')";
 
 					SqlCommand cmd2 = new SqlCommand();
 					cmd2.Connection = con;
@@ -362,7 +362,7 @@ namespace LibrarySystemBackEnd {
 					cmd2.CommandText = sqlstr2;
 
 					if (cmd2.ExecuteNonQuery() <= 0) {
-						string sqlstr3 = "SET ROWCOUNT 1 update dt_Abook set bookState = 1,borrowUserId = '" + userid + "', borrowTime = '" + DateTime.Now + "', returnTime = '" + (DateTime.Now + DefaultDate) + "'where bookIsbn like '" + bookid + "%' and bookState = 0 SET ROWCOUNT 0";
+						string sqlstr3 = "SET ROWCOUNT 1 update dt_Abook set bookState = 1,borrowUserId = '" + userid + "', borrowTime = '" + DateTime.Now + "', returnTime = '" + (DateTime.Now + DefaultDate) + "'where bookIsbn = '" + bookid + "' and bookState = 0 SET ROWCOUNT 0";
 
 						SqlCommand cmd3 = new SqlCommand();
 						cmd3.Connection = con;
@@ -408,8 +408,8 @@ namespace LibrarySystemBackEnd {
 					cmd.CommandType = CommandType.Text;
 					cmd.CommandText = "insert into dt_Book values(@a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k)";
 					cmd.Parameters.Clear();
-					cmd.Parameters.AddWithValue("@a", bk.BookName);
-					cmd.Parameters.AddWithValue("@b", bk.BookIsbn);
+					cmd.Parameters.AddWithValue("@a", bk.BookIsbn);
+					cmd.Parameters.AddWithValue("@b", bk.BookName);
 					cmd.Parameters.AddWithValue("@c", bk.BookPublisher);
 					cmd.Parameters.AddWithValue("@d", bk.BookAuthor);
 					cmd.Parameters.AddWithValue("@e", bk.BookImage);
@@ -424,22 +424,18 @@ namespace LibrarySystemBackEnd {
 						throw new Exception();
 					foreach (ClassABook abk in bk.Book) {
 						cmd.CommandType = CommandType.Text;
-						cmd.CommandText = "insert into dt_Abook values(@a,@b,@c,@d,@e,@f,@g,@h,@i,@j,@k,@l,@m)";
+						cmd.CommandText = "insert into dt_Abook values(@a,@b,@c,@d,@e,@f,@g,@h,@i)";
 						cmd.Parameters.Clear();
 
-						cmd.Parameters.AddWithValue("@a", abk.BookName);
-						cmd.Parameters.AddWithValue("@b", abk.BookIsbn);
-						cmd.Parameters.AddWithValue("@c", abk.BookPublisher);
-						cmd.Parameters.AddWithValue("@d", abk.BookAuthor);
-						cmd.Parameters.AddWithValue("@e", abk.BookImage);
-						cmd.Parameters.AddWithValue("@f", abk.BookPublishDate);
-						cmd.Parameters.AddWithValue("@g", abk.BookBroughtTime);
-						cmd.Parameters.AddWithValue("@h", abk.BookState);
-						cmd.Parameters.AddWithValue("@i", abk.BorrowUserId);
-						cmd.Parameters.AddWithValue("@j", abk.BorrowTime);
-						cmd.Parameters.AddWithValue("@k", abk.ReturnTime);
-						cmd.Parameters.AddWithValue("@l", abk.Delayed);
-						cmd.Parameters.AddWithValue("@m", abk.Deleted);
+						cmd.Parameters.AddWithValue("@a", abk.BookIsbn.Substring(0,13));
+						cmd.Parameters.AddWithValue("@b", abk.BookIsbn.Substring(13, 4));
+						cmd.Parameters.AddWithValue("@c", abk.BookBroughtTime);
+						cmd.Parameters.AddWithValue("@d", abk.BookState);
+						cmd.Parameters.AddWithValue("@e", abk.BorrowUserId);
+						cmd.Parameters.AddWithValue("@f", abk.BorrowTime);
+						cmd.Parameters.AddWithValue("@g", abk.ReturnTime);
+						cmd.Parameters.AddWithValue("@h", abk.Delayed);
+						cmd.Parameters.AddWithValue("@i", abk.Deleted);
 
 						if (cmd.ExecuteNonQuery() < 0)
 							throw new Exception();
@@ -565,7 +561,7 @@ namespace LibrarySystemBackEnd {
 			List<ClassABook> abk = new List<ClassABook>();
 			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString)) {
 				SqlCommand cmd = con.CreateCommand();
-				cmd.CommandText = "select * from dt_Abook where bookIsbn like '" + bookIsbn + "%'";
+				cmd.CommandText = "select * from dt_Books where bookIsbn='" + bookIsbn.Substring(0, 13) + "'";
 
 				con.Open();
 				SqlDataReader dr = cmd.ExecuteReader();
@@ -665,11 +661,11 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlCommand cmd = new SqlCommand();
 				cmd.Connection = con;
-				cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn LIKE '%" + bookIsbn + "%')";
+				cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn LIKE '" + bookIsbn + "%')";
 
 				linenum = Convert.ToInt32(cmd.ExecuteScalar());
 
-				cmd.CommandText = "select * from  (select row_number() over(order by commentTime desc) 'rn',* from dt_Comment where (commentIsbn LIKE '%" + bookIsbn + "%'))t where rn between " + curnum + " and " + (curnum + 4);
+				cmd.CommandText = "select * from  (select row_number() over(order by commentTime desc) 'rn',* from dt_Comment where (commentIsbn LIKE '" + bookIsbn + "%'))t where rn between " + curnum + " and " + (curnum + 4);
 
 
 				SqlDataReader dr = cmd.ExecuteReader();
@@ -701,7 +697,7 @@ namespace LibrarySystemBackEnd {
 					cmd.Transaction = tra;
 					cmd.Connection = con;
 
-					cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn LIKE '%" + bookIsbn + "%')";
+					cmd.CommandText = "select count(*) from dt_Comment where (commentIsbn LIKE '" + bookIsbn + "%')";
 
 					int amo = Convert.ToInt32(cmd.ExecuteScalar());
 
@@ -897,8 +893,7 @@ namespace LibrarySystemBackEnd {
 				try {
 					tra = con.BeginTransaction();
 
-					string sqlstr1 = "select * from dt_Abook where (bookIsbn='" + bookIsbn + "')";
-
+					string sqlstr1 = "select * from dt_Abook where (bookIsbn='" + bookIsbn.Substring(0,13) + "' and suffix='"+bookIsbn.Substring(13,4)+"')";
 
 					cmd1 = new SqlCommand();
 					cmd1.Connection = con;
@@ -929,13 +924,14 @@ namespace LibrarySystemBackEnd {
 					}
 
 
-					sqlstr1 = "update dt_ABook set bookState = 0, delayed=0, borrowUserId='' where bookIsbn = @a";
+					sqlstr1 = "update dt_ABook set bookState = 0, delayed=0, borrowUserId='' where bookIsbn = @a and suffix = @b";
 					cmd1 = new SqlCommand();
 					cmd1.Connection = con;
 					cmd1.Transaction = tra;
 					cmd1.CommandText = sqlstr1;
 					cmd1.Parameters.Clear();
-					cmd1.Parameters.AddWithValue("@a", bookIsbn);
+					cmd1.Parameters.AddWithValue("@a", bookIsbn.Substring(0,13));
+					cmd1.Parameters.AddWithValue("@b", bookIsbn.Substring(13, 4));
 
 					if (cmd1.ExecuteNonQuery() != 1) {
 						throw new Exception();
@@ -957,16 +953,17 @@ namespace LibrarySystemBackEnd {
 						throw new Exception();
 					}
 
-					sqlstr1 = "insert into dt_userBorrowHis values(@a,@b,@c,@d)";
+					sqlstr1 = "insert into dt_userBorrowHis values(@a,@b,@c,@d,@e)";
 					cmd1 = new SqlCommand();
 					cmd1.Connection = con;
 					cmd1.Transaction = tra;
 					cmd1.CommandText = sqlstr1;
 					cmd1.Parameters.Clear();
-					cmd1.Parameters.AddWithValue("@a", bookIsbn);
-					cmd1.Parameters.AddWithValue("@b", userId);
-					cmd1.Parameters.AddWithValue("@c", borrowTime);
-					cmd1.Parameters.AddWithValue("@d", DateTime.Now);
+					cmd1.Parameters.AddWithValue("@a", bookIsbn.Substring(0,13));
+					cmd1.Parameters.AddWithValue("@b", bookIsbn.Substring(13, 4));
+					cmd1.Parameters.AddWithValue("@c", userId);
+					cmd1.Parameters.AddWithValue("@d", borrowTime);
+					cmd1.Parameters.AddWithValue("@e", DateTime.Now);
 					if (cmd1.ExecuteNonQuery() != 1)
 						throw new Exception("插入历史失败！");
 
@@ -992,14 +989,15 @@ namespace LibrarySystemBackEnd {
 					}
 
 					if (scheduleuser != "") {
-						sqlstr1 = "update dt_ABook set bookState=2,borrowUserId=@a where bookIsbn = @b";
+						sqlstr1 = "update dt_ABook set bookState=2,borrowUserId=@a where bookIsbn = @b and suffix = @c";
 						cmd1 = new SqlCommand();
 						cmd1.Connection = con;
 						cmd1.Transaction = tra;
 						cmd1.CommandText = sqlstr1;
 						cmd1.Parameters.Clear();
 						cmd1.Parameters.AddWithValue("@a", scheduleuser);
-						cmd1.Parameters.AddWithValue("@b", bookIsbn);
+						cmd1.Parameters.AddWithValue("@b", bookIsbn.Substring(0,13));
+						cmd1.Parameters.AddWithValue("@c", bookIsbn.Substring(13, 4));
 						if (cmd1.ExecuteNonQuery() != 1) {
 							throw new Exception("预约异常！");
 						}
@@ -1020,6 +1018,7 @@ namespace LibrarySystemBackEnd {
 					tra.Commit();
 					res = 0;
 				} catch (Exception e) {
+					LOGGER.Warn(e);
 					if (res == 0)
 						res = 2;
 					tra.Rollback();
@@ -1102,15 +1101,16 @@ namespace LibrarySystemBackEnd {
 				try {
 					tra = con.BeginTransaction();
 
-					string sqlstr1 = "select * from dt_Abook where (bookIsbn=@a and borrowUserId=@b and bookState=1)";
+					string sqlstr1 = "select * from dt_Abook where (bookIsbn=@a and suffix =@c and borrowUserId=@b and bookState=1)";
 
 					cmd1 = new SqlCommand();
 					cmd1.Connection = con;
 					cmd1.Transaction = tra;
 					cmd1.CommandText = sqlstr1;
 					cmd1.Parameters.Clear();
-					cmd1.Parameters.AddWithValue("@a", bookIsbn);
+					cmd1.Parameters.AddWithValue("@a", bookIsbn.Substring(0,13));
 					cmd1.Parameters.AddWithValue("@b", userId);
+					cmd1.Parameters.AddWithValue("@c", bookIsbn.Substring(13, 4));
 
 					rd = cmd1.ExecuteReader();
 					bool delayed = false;
@@ -1181,9 +1181,10 @@ namespace LibrarySystemBackEnd {
 		public ClassABook LoadABook(string bookIsbn) {
 			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString)) {
 				SqlCommand cmd = con.CreateCommand();
-				cmd.CommandText = "select * from dt_ABook where bookIsbn=@a";
+				cmd.CommandText = "select * from dt_Books where bookIsbn=@a and suffix = @b";
 				cmd.Parameters.Clear();
-				cmd.Parameters.AddWithValue("@a", bookIsbn);
+				cmd.Parameters.AddWithValue("@a", bookIsbn.Substring(0,13));
+				cmd.Parameters.AddWithValue("@b", bookIsbn.Substring(13, 4));
 
 				con.Open();
 				SqlDataReader dr = cmd.ExecuteReader();
@@ -1286,7 +1287,7 @@ namespace LibrarySystemBackEnd {
 
 				SqlCommand cmd1 = new SqlCommand();
 				cmd1.Connection = con;
-				cmd1.CommandText = "UPDATE dt_UserBasic SET[userCredit] = (case when userCredit+@a > 100 then 100 else userCredit + @a end),[userCurrentMaxBorrowableAmount]=(case when userCredit+@a > 100 then 10 else userCredit + (@a+9)/10 end) WHERE userId = @b";
+				cmd1.CommandText = "UPDATE dt_UserBasic SET[userCredit] = (case when userCredit+@a > 100 then 100 else userCredit + @a end),[userCurrentMaxBorrowableAmount]=(case when userCredit+@a > 100 then 10 else (userCredit + @a+9)/10 end) WHERE userId = @b";
 				cmd1.Parameters.Clear();
 				cmd1.Parameters.AddWithValue("@a", amount);
 				cmd1.Parameters.AddWithValue("@b", userId);
@@ -1314,9 +1315,10 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlCommand cmd = new SqlCommand();
 				cmd.Connection = con;
-				cmd.CommandText = "select * from dt_UserBorrowHis where (bookIsbn = @a)";
+				cmd.CommandText = "select * from dt_UserBorrowHis where (bookIsbn = @a and suffix = @b)";
 				cmd.Parameters.Clear();
-				cmd.Parameters.AddWithValue("@a", bookIsbn);
+				cmd.Parameters.AddWithValue("@a", bookIsbn.Substring(0,13));
+				cmd.Parameters.AddWithValue("@b", bookIsbn.Substring(13, 4));
 				SqlDataReader dr = cmd.ExecuteReader();
 				if (dr.HasRows) {
 					while (dr.Read()) {
@@ -1332,9 +1334,10 @@ namespace LibrarySystemBackEnd {
 
 				cmd = new SqlCommand();
 				cmd.Connection = con;
-				cmd.CommandText = "select * from dt_Abook where (bookIsbn = @a and (bookState='1' or bookState='2'))";
+				cmd.CommandText = "select * from dt_Abook where (bookIsbn = @a and suffix = @b and (bookState='1' or bookState='2'))";
 				cmd.Parameters.Clear();
-				cmd.Parameters.AddWithValue("@a", bookIsbn);
+				cmd.Parameters.AddWithValue("@a", bookIsbn.Substring(0,13));
+				cmd.Parameters.AddWithValue("@b", bookIsbn.Substring(13, 4));
 				dr = cmd.ExecuteReader();
 				if (dr.HasRows) {
 					while (dr.Read()) {
