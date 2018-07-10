@@ -48,9 +48,10 @@ namespace LibrarySystemBackEnd {
 					streamToClient.BeginRead(buffer, 0, BufferSize, callback, null);
 				}
 			} catch (Exception e) {
-				LOGGER.Warn(e);
+				//LOGGER.Warn(e);
 				if (streamToClient != null) streamToClient.Dispose();
-				client.Close();
+				if(client.Connected)
+					client.Close();
 			}
 		}
 
