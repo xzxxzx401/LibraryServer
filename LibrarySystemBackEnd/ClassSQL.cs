@@ -41,7 +41,7 @@ namespace LibrarySystemBackEnd {
 			initialCatalog = sqlNode.SelectSingleNode("initialcatalog").InnerText.Trim();
 
 			if (sqlName == "" || loginName == "" || loginPassword == "" || initialCatalog == "") {
-				LOGGER.Error("数据库配置不正确！");
+				LOGGER.Error("数据库配置不正确，请配置DatabaseConfig.xml！");
 				throw new Exception("数据库配置不正确！");
 			}
 
