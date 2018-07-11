@@ -28,23 +28,5 @@ namespace LibrarySystemBackEnd {
 				wapper.BeginRead();
 			}
 		}
-
-		static void ThreadDeal() {
-			ThreadPool.SetMinThreads(10, 5);
-			ThreadPool.SetMaxThreads(20, 10);
-			double alpha = 0.8;
-			int oldThread = 10, oldIOThread = 5;
-			while (true) {
-				int availThread = 0, availIOThread = 0;
-				ThreadPool.GetAvailableThreads(out availThread, out availIOThread);
-				availThread = (int)((oldThread * alpha + availThread * (1 - 0.8)) / alpha);
-				availIOThread = (int)((oldIOThread * alpha + availIOThread * (1 - 0.8)) / alpha);
-
-				ThreadPool.SetMinThreads(availThread, availIOThread);
-
-
-				Thread.Sleep(2000);
-			}
-		}
 	}
 }

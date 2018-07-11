@@ -63,7 +63,7 @@ namespace LibrarySystemBackEnd {
 			ProtocolHelper helper = new ProtocolHelper(pro);
 			Protocol protocol = helper.GetProtocol();
 
-			LOGGER.WarnFormat("Receive:{0}", pro);
+			LOGGER.DebugFormat("Receive:{0}", pro);
 
 			if (protocol.Mode == RequestMode.UserLogin) {
 				IClassSQLConnecter bk = new ClassSQLConnecter();

@@ -82,7 +82,6 @@
     <Compile Include="ProtocolHandler.cs" />
     <Compile Include="ProtocolHelper.cs" />
     <Compile Include="RemoteClient.cs" />
-    <Compile Include="SendStatus.cs" />
     <Compile Include="ServerMain.cs" />
   </ItemGroup>
   <ItemGroup>
