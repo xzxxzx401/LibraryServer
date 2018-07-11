@@ -28,13 +28,7 @@ namespace LibrarySystemBackEnd {
 			return GetProtocol(input, null);
 		}
 
-		/// <summary>
-		/// 获取协议
-		/// </summary>
-		/// <param name="input"></param>
-		/// <param name="outputList"></param>
-		/// <returns></returns>
-		public string[] GetProtocol(string input, List<string> outputList) {
+		private string[] GetProtocol(string input, List<string> outputList) {
 			if (outputList == null)
 				outputList = new List<string>();
 			if (String.IsNullOrEmpty(input))

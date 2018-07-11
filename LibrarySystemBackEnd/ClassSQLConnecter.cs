@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LibrarySystemBackEnd {
-	class ClassSQLConnecter {
+	class ClassSQLConnecter : IClassSQLConnecter {
 		#region 常量
 		/// <summary>
 		/// 默认的借阅期限
@@ -253,6 +253,9 @@ namespace LibrarySystemBackEnd {
 		/// </summary>
 		/// <param name="id">用户id</param>
 		/// <param name="password">密码</param>
+		/// <param name="bookAmount"></param>
+		/// <param name="userAmount"></param>
+		/// <param name="borrowingRate"></param>
 		/// <returns>管理员登录成功返回2，用户登录成功返回1,失败返回0(用户名不存在，密码不正确)</returns>
 		public int Login(string id, string password, ref int bookAmount, ref int userAmount, ref double borrowingRate) {
 			ClassUserBasicInfo user = getUsersBasic(id);
