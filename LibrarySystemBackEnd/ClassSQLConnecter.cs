@@ -339,7 +339,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlTransaction tra = null;
 				try {
-					tra = con.BeginTransaction();
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
 					string sqlstr1 = "update dt_UserBasic set userCurrentBorrowedAmount=userCurrentBorrowedAmount+1 where userId='" + userid + "' and userPassword='" + password + "' and userCurrentBorrowedAmount<userCurrentMaxBorrowableAmount";
 					SqlCommand cmd1 = new SqlCommand();
 					cmd1.Connection = con;
@@ -403,7 +403,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlTransaction tra = null;
 				try {
-					tra = con.BeginTransaction();
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
 					SqlCommand cmd = new SqlCommand();
 					cmd.Transaction = tra;
 					cmd.Connection = con;
@@ -695,7 +695,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlTransaction tra = null;
 				try {
-					tra = con.BeginTransaction();
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
 					SqlCommand cmd = new SqlCommand();
 					cmd.Transaction = tra;
 					cmd.Connection = con;
@@ -772,7 +772,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlTransaction tra = null;
 				try {
-					tra = con.BeginTransaction();
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
 
 					string sqlstr1 = "select count(*) from dt_UserBasic where (userId='" + userId + "' and userPassword='" + userPassword + "')";
 
@@ -894,7 +894,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlTransaction tra = null; SqlCommand cmd1; SqlDataReader rd;
 				try {
-					tra = con.BeginTransaction();
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
 
 					string sqlstr1 = "select * from dt_Abook where (bookIsbn='" + bookIsbn.Substring(0,13) + "' and suffix='"+bookIsbn.Substring(13,4)+"')";
 
@@ -1047,7 +1047,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlTransaction tra = null; SqlCommand cmd1;
 				try {
-					tra = con.BeginTransaction();
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
 
 					string sqlstr1 = "delete from dt_Schedule where userId=@a and bookIsbn = @b";
 					cmd1 = new SqlCommand();
@@ -1102,7 +1102,7 @@ namespace LibrarySystemBackEnd {
 				con.Open();
 				SqlTransaction tra = null; SqlCommand cmd1; SqlDataReader rd;
 				try {
-					tra = con.BeginTransaction();
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
 
 					string sqlstr1 = "select * from dt_Abook where (bookIsbn=@a and suffix =@c and borrowUserId=@b and bookState=1)";
 
@@ -1387,6 +1387,58 @@ namespace LibrarySystemBackEnd {
 			return his.ToArray();
 		}
 
+		public bool AdminDeleteBook(string bookIsbn) {
+			bool res = true;
+			using (SqlConnection con = new SqlConnection(sql.Builder.ConnectionString)) {
+				con.Open();
+				SqlTransaction tra = null;
+				try {
+					tra = con.BeginTransaction(IsolationLevel.RepeatableRead);
+					SqlCommand cmd1 = new SqlCommand();
+					cmd1.Transaction = tra;
+					cmd1.Connection = con;
+
+					cmd1.CommandType = CommandType.Text;
+					cmd1.CommandText = "delete from dt_Book where bookIsbn = @a";
+					cmd1.Parameters.Clear();
+					cmd1.Parameters.AddWithValue("@a", bookIsbn);
+
+					if (cmd1.ExecuteNonQuery() < 0)
+						throw new Exception();
+
+					SqlCommand cmd2 = new SqlCommand();
+					cmd2.Transaction = tra;
+					cmd2.Connection = con;
+
+					cmd2.CommandType = CommandType.Text;
+					cmd2.CommandText = "delete from dt_Abook where bookIsbn = @a";
+					cmd2.Parameters.Clear();
+					cmd2.Parameters.AddWithValue("@a", bookIsbn);
+
+					if (cmd2.ExecuteNonQuery() < 0)
+						throw new Exception();
+
+					SqlCommand cmd3 = new SqlCommand();
+					cmd3.Transaction = tra;
+					cmd3.Connection = con;
+
+					cmd3.CommandType = CommandType.Text;
+					cmd3.CommandText = "delete from dt_Comment where bookIsbn LIKE '" + bookIsbn + "%'";
+					cmd3.Parameters.Clear();
+
+					if (cmd3.ExecuteNonQuery() < 0)
+						throw new Exception();
+
+					tra.Commit();
+					res = true;
+				} catch (Exception e) {
+					LOGGER.Warn(e);
+					res = false;
+					tra.Rollback();
+				}
+			}
+			return res;
+		}
 		#endregion
 	}
 }

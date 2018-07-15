@@ -222,6 +222,9 @@ namespace LibrarySystemBackEnd {
 
 				return;
 
+			} else if(protocol.Mode == RequestMode.AdminDeleteBook) {
+				IClassSQLConnecter bk = new ClassSQLConnecter();
+				protocol.Retval = Convert.ToInt32(bk.AdminDeleteBook(protocol.NowComment.CommentIsbn));
 			}
 			SendMessage(protocol.ToString());
 		}

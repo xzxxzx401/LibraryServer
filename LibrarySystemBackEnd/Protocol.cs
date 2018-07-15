@@ -45,6 +45,7 @@ namespace LibrarySystemBackEnd {
 		AdminAddBook,
 		AdminLoadABookHis,
 		AdminSendImageAck,
+		AdminDeleteBook,
 	}
 	/// <summary>
 	/// 协议类
@@ -588,7 +589,11 @@ namespace LibrarySystemBackEnd {
 				case RequestMode.AdminSendImageAck: {
 					return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
 				}
+				case RequestMode.AdminDeleteBook: {
+					return String.Format("<protocol><file mode=\"{0}\" port=\"{1}\" retval=\"{2}\" /></protocol>", mode, port, returnVal);
+				}
 				default:
+					log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType).ErrorFormat("Switch[{0}] out of range!", mode.ToString());
 					break;
 			}
 			return "";

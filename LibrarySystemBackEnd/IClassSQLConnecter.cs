@@ -25,5 +25,6 @@
 		bool RegisterUser(string userid, string username, string password, string school, USERTYPE usertype);
 		int ReturnBook(string userId, string userPassword, string bookIsbn);
 		ClassBook[] SearchBook(int type, string searchInfo, int curnum, ref int linenum);
+		bool AdminDeleteBook(string bookIsbn);
 	}
 }

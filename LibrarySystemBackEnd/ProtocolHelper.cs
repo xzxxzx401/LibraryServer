@@ -257,9 +257,15 @@ namespace LibrarySystemBackEnd {
 					break;
 
 				}
-
-				default:
+				case RequestMode.AdminDeleteBook: {
+					XmlNode booknode = root.SelectSingleNode("book");
+					pro.NowBook = new ClassBook(booknode.Attributes["bookisbn"].Value);
 					break;
+				}
+				default: {
+					log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType).ErrorFormat("Switch[{0}] Out of range!", mode.ToString());
+					break;
+				}
 			}
 			return pro;
 		}
