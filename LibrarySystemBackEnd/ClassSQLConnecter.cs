@@ -1406,6 +1406,17 @@ namespace LibrarySystemBackEnd {
 					if (cmd3.ExecuteNonQuery() < 0)
 						throw new Exception();
 
+					SqlCommand cmd0 = new SqlCommand();
+					cmd0.Transaction = tra;
+					cmd0.Connection = con;
+
+					cmd0.CommandType = CommandType.Text;
+					cmd0.CommandText = "delete from dt_UserBorrowHis where bookIsbn LIKE '" + bookIsbn + "%'";
+					cmd0.Parameters.Clear();
+
+					if (cmd0.ExecuteNonQuery() < 0)
+						throw new Exception();
+
 					SqlCommand cmd2 = new SqlCommand();
 					cmd2.Transaction = tra;
 					cmd2.Connection = con;
@@ -1418,6 +1429,7 @@ namespace LibrarySystemBackEnd {
 					if (cmd2.ExecuteNonQuery() < 0)
 						throw new Exception();
 
+
 					SqlCommand cmd1 = new SqlCommand();
 					cmd1.Transaction = tra;
 					cmd1.Connection = con;
@@ -1429,7 +1441,6 @@ namespace LibrarySystemBackEnd {
 
 					if (cmd1.ExecuteNonQuery() < 0)
 						throw new Exception();
-
 
 					tra.Commit();
 					res = true;
